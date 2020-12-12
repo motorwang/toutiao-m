@@ -65,7 +65,7 @@ export default {
     },
 
     created() {
-        console.log('是否登录', this.isLogin())
+        // console.log('是否登录', this.isLogin());
         if(this.isLogin()){
             // this.getUserInfo();
         }
@@ -80,9 +80,9 @@ export default {
         async getUserInfo(){
             try {
                 let res = await userInfo();
-                console.log(res)
+                console.log(res);
             } catch (err) {
-                console.log(err)
+                console.log(err);
             }
         },
 

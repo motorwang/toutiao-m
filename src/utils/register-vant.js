@@ -9,9 +9,11 @@ import {
     Toast,
     CountDown,
     Form,
-
-
-
+    Tabbar,
+    TabbarItem,
+    Grid,
+    GridItem,
+    Dialog,
 
 
 } from 'vant';
@@ -25,4 +27,9 @@ Vue.use(Button)
     .use(Toast)
     .use(CountDown)
     .use(Form)
+    .use(Tabbar)
+    .use(TabbarItem)
+    .use(Grid)
+    .use(GridItem)
+    .use(Dialog)
     

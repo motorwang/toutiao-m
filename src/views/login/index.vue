@@ -8,7 +8,7 @@
                 clearable
                 label="手机号"
                 placeholder="请输入手机号"
-                type='tel'
+                type='number'
                 maxlength='11'
             />
             <van-field
@@ -37,6 +37,8 @@
 
 <script>
 import { login, getCode } from '@/api/user';
+// import store from '../../store/index';
+
 export default {
     name: 'login',
 
@@ -59,9 +61,14 @@ export default {
             // 3. 发送验证码
             let { mobile } = this.user;
             if(!this.verify_mobile(mobile)){
-                this.$toast('请输入正确的手机号', 1);
+                this.$toast({
+                    duration: 1000, // 为0 表示持续展示 toast
+                    message: '请输入正确的手机号',
+                });
+
                 return;
             }
+            return;
             
             this.isShow = true;
 
@@ -73,10 +80,10 @@ export default {
                 
                 this.isShow = false; // 发送失败 关闭倒计时
                 if(err.response.status === 429){
-                    this.$toast('请勿频繁操作', 1);
+                    this.$toast('请勿频繁操作');
                     return;
                 } else{
-                    this.$toast('发送失败', 1);
+                    this.$toast('发送失败');
                 }
             }
         },
@@ -84,33 +91,62 @@ export default {
 
         // 手机号校验
         verify_mobile(val) {
-            return /^1\d{10}/.test(val);
+            return /^1\d{10}$/.test(val);
         },
 
         // 验证码 校验
         verify_code(val) {
-            return /\d{6}/.test(val);
+            return /\d{6}$/.test(val);
         },
         
         // 登录
         async onLogin(){
+            let data = {
+                    refresh_token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDg5ODQ4MjEsInVzZXJfaWQiOjEzMzcwNTIyNDY5MTA2OTc0NzIsInJlZnJlc2giOnRydWV9.DxPjWNLR75z10ouAaKXPfngJXBv8hNXWPhErrnJM6EM",
+                    token: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2MDc3ODI0MjEsInVzZXJfaWQiOjEzMzcwNTIyNDY5MTA2OTc0NzIsInJlZnJlc2giOmZhbHNlfQ.mezZeX1QxaIbWXStQcbYK7LobfFv8zF_WohQXPNsilg"
+                }
+                
+            this.$store.commit('setUser', data);
+            this.$router.push('/my')
+            return;
+
+
             let { mobile, code } = this.user;
             if(!this.verify_mobile(mobile)){
-                this.$toast('请输入正确的手机号', 1);
+                this.$toast({
+                    duration: 1000, // 为0 表示持续展示 toast
+                    message: '请输入正确的手机号',
+                });
                 return;
             }
             if(!this.verify_code(code)){
-                this.$toast('请输入正确的验证码', 1);
+                this.$toast({
+                    duration: 1000, // 为0 表示持续展示 toast
+                    message: '请输入正确的验证码',
+                });
                 return;
             }
 
-            this.$toast.loading('登录中...', 0);
+            this.$toast.loading({
+                duration: 0, // 为0 表示持续展示 toast
+                message: '请输入正确的验证码',
+            });
+
             try{
                 let res = await login(this.user);
                 console.log(res);
-                this.$toast('登录成功!', 1);
+
+                this.$store.commit('setUser', res.data.data);
+                
+                this.$toast({
+                    duration: 1000, // 为0 表示持续展示 toast
+                    message: '登录成功!',
+                });
             } catch(err){
-                this.$toast('登录失败!', 1);
+                this.$toast({
+                    duration: 1000, // 为0 表示持续展示 toast
+                    message: '登录失败!',
+                });
                 console.log('登录失败', err);
             }
         }

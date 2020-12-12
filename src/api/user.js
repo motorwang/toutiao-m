@@ -36,6 +36,14 @@ export const login = (data)=>{
 export const getCode = (mobile)=>{
     return request({
         mmethod: 'GET',
-        url: `app/v1_0/sms/codes/${mobile}`
+        url: `/app/v1_0/sms/codes/${mobile}`
+    })
+}
+
+// 获取用户信息
+export const userInfo = (mobile)=>{
+    return request({
+        mmethod: 'GET',
+        url: '/app/v1_0/user/'
     })
 }

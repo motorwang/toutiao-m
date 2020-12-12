@@ -8,6 +8,8 @@ import {
     Field,
     Toast,
     CountDown,
+    Form,
+
 
 
 
@@ -22,4 +24,5 @@ Vue.use(Button)
     .use(Field)
     .use(Toast)
     .use(CountDown)
+    .use(Form)
     

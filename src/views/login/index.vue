@@ -2,19 +2,22 @@
     <div class="login">
         <van-nav-bar title="登录" />
 
-        <van-cell-group>
+        <van-form  @submit="()=>{return false;}">
             <van-field
                 v-model="user.mobile"
-                required
                 clearable
                 label="手机号"
                 placeholder="请输入手机号"
+                type='tel'
+                maxlength='11'
             />
             <van-field
                 v-model="user.code"
                 required
                 label="验证码"
                 placeholder="请输入验证码"
+                type='number'
+                maxlength='6'
             >
                 <template #button>
                     <van-button size="mini" round type="primary" v-if="isShow">
@@ -23,7 +26,7 @@
                     <van-button size="mini" round type="primary" v-else @click="sendCode">发送验证码</van-button>
                 </template>
             </van-field>
-        </van-cell-group>
+        </van-form>
 
         <div class="login_btn">
             <van-button type="info" @click="onLogin">登录</van-button>
@@ -55,6 +58,11 @@ export default {
             // 2. 校验手机号
             // 3. 发送验证码
             let { mobile } = this.user;
+            if(!this.verify_mobile(mobile)){
+                this.$toast('请输入正确的手机号', 1);
+                return;
+            }
+            
             this.isShow = true;
 
             try {
@@ -72,9 +80,30 @@ export default {
                 }
             }
         },
+
+
+        // 手机号校验
+        verify_mobile(val) {
+            return /^1\d{10}/.test(val);
+        },
+
+        // 验证码 校验
+        verify_code(val) {
+            return /\d{6}/.test(val);
+        },
         
         // 登录
         async onLogin(){
+            let { mobile, code } = this.user;
+            if(!this.verify_mobile(mobile)){
+                this.$toast('请输入正确的手机号', 1);
+                return;
+            }
+            if(!this.verify_code(code)){
+                this.$toast('请输入正确的验证码', 1);
+                return;
+            }
+
             this.$toast.loading('登录中...', 0);
             try{
                 let res = await login(this.user);

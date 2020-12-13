@@ -22,16 +22,6 @@ export const login = (data)=>{
     })
 }
 
-// export const channels = (data)=>{
-//     return request({
-//         mmethod: 'post',
-//         url: '/app/v1_0/channels',
-//         data
-//     })
-// }
-
-
-// app/v1_0/sms/codes/:mobile
 // 获取验证码 每分钟限制1次
 export const getCode = (mobile)=>{
     return request({
@@ -45,5 +35,13 @@ export const userInfo = (mobile)=>{
     return request({
         mmethod: 'GET',
         url: '/app/v1_0/user/'
+    })
+}
+
+// 获取用户频道列表
+export const getChannels = ()=>{
+    return request({
+        mmethod: 'GET',
+        url: '/app/v1_0/user/channels'
     })
 }

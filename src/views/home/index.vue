@@ -1,7 +1,17 @@
 <template>
     <div class="home">
         <!-- 顶部导航 -->
-        <van-nav-bar fixed z-index='9' title="首页" />
+        <van-nav-bar fixed z-index='9'>
+            <template #left>
+                <span class="left_text">首页</span>
+            </template>
+            <template #right>
+                <router-link class="search" tag='div' to='/search'>
+                    <van-icon name="search" size="18" />
+                    <span>搜索</span>
+                </router-link>
+            </template>
+        </van-nav-bar>
         <!-- <van-nav-bar title="首页" /> -->
 
         <!-- 频道列表 -->
@@ -97,6 +107,32 @@ export default {
     box-sizing: border-box;
     height: 100%;
     background-color: #fff;
+    .left_text{
+        color: #fff;
+        font-size: 15px;
+    }
+
+    .search{
+        width: 160px;
+        height: 24px;
+        line-height: 24px;
+        border-radius: 24px;
+        position: relative;
+        box-sizing: border-box;
+        background-color: #fff;
+        .van-icon-search{
+            color: #323232;
+            line-height: 24px;
+            position: absolute;
+            top: 0;
+            left: 20px;
+        }
+        span {
+            color: #323232;
+            vertical-align: top;
+        }
+
+    }
 
     .wap-nav{
         width: 44px;

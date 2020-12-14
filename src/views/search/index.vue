@@ -5,7 +5,7 @@
                 v-model="searchText"
                 show-action
                 placeholder="请输入搜索关键词"
-                @search="onSearch"
+                @search="onSearch(searchText)"
                 @cancel="onCancel"
                 @focus="isShow=false"
                 @input='get_suggestion'
@@ -41,19 +41,17 @@
         <div class="record" v-else>
             <div class="title">
                 <span class="left">历史记录</span>
-                <van-icon name="delete" class="right" />
-                <span class="right" >
-                    <i>全部删除</i>
-                    <i>完成</i>
+                <van-icon name="delete" class="right" v-if='!showDelete' @click="showDelete=true"/>
+                <span class="right" v-if='showDelete'>
+                    <i @click="searchRecord=[]">全部删除</i>
+                    <i @click="showDelete=false">完成</i>
                 </span>
             </div>
             <ul>
-                <li>
-                    <div>历史记录</div>
-                    <van-icon class="icon" name="close" />
+                <li v-for="(item, index) in searchRecord" :key='index' @click="onSearch(item)">
+                    <div>{{item}}</div>
+                    <van-icon class="icon" name="close" v-if='showDelete' @click.stop="deleteItem(index)"/>
                 </li>
-                <li>历史记录</li>
-                <li>历史记录</li>
             </ul>
         </div>
     </div>
@@ -61,6 +59,8 @@
 
 <script>
 import { getSuggestion, getSearch, getHistories} from '../../api/article';
+import {getStorage, setStorage} from '../../utils/storage'
+import { debounce } from 'lodash';  // 防抖防抖
 export default {
     name: 'search',
     data(){
@@ -72,26 +72,43 @@ export default {
             suggestions: [],
             page: 1, // 分页
             results: [],
-            // showBtn: true,  // 是否显示删除
+            searchRecord: [],
+            showDelete: false,
         }
     },
 
     created() {
-        // this.get_histories();
+        this.searchRecord = getStorage('searchRecord') || [];
+    },
+
+    watch: {
+        searchRecord(newV, oldV){
+            setStorage('searchRecord', newV);
+        }
     },
 
     methods: {
-        onSearch(){
+        onSearch(str){
+            this.searchText = str;
+            let index = this.searchRecord.indexOf(str);
+            if(index != -1){
+                this.searchRecord.splice(index, 1);
+                this.searchRecord.unshift(str);
+            } else {
+                this.searchRecord.unshift(str);
+            }
+
+
             this.isShow = true;
         },
 
         // 输入联想建议
-        async get_suggestion(){
+        get_suggestion: debounce(async function(){
             if(!this.searchText){return};
 
             let { data } = await getSuggestion(this.searchText);
             this.suggestions = data.data.options;
-        },
+        }, 500),
 
         // 高亮处理
         highLight(str){
@@ -106,24 +123,27 @@ export default {
             // 2. 将数据添加到列表中
             // 3. 设置加载状态
             // 4. 判断数据是否加载完成
+
+            console.log('onLoad')
             getSearch({
                 page: this.page,
                 per_page: 15,
                 q: this.searchText
             }).then(res=>{
-                this.loading = false;
-
                 if(this.page==1){
                     this.results = res.data.data.results;
                 } else {
                     this.results = [...this.results, ...res.data.data.results];
                 }
                 
-                if(res.data.data.results.length){
+                // console.log('测试', res.data.data.results.length);
+                this.loading = false;
+
+                if(res.data.data.results.length >= 15){
                     this.page++; // 加载下一页
                     console.log('加载中');
                 } else {
-                    this.finished = false;  // 没有数据结束加载
+                    this.finished = true;  // 没有数据结束加载
                     console.log('加载结束');
                 }
             })
@@ -133,7 +153,13 @@ export default {
             this.searchText = str;
             this.page = 1;
             this.isShow = true;
-            this.onLoad();
+
+            this.onSearch(str);
+        },
+
+        // 删除单条搜索记录
+        deleteItem(index){
+            this.searchRecord.splice(index, 1);
         },
 
         // 获取搜索历史

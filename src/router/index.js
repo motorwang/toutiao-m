@@ -60,6 +60,15 @@ const routes = [
         meta:{
             title: '搜索'
         }
+    },
+    {
+        path: '/detail',
+        name: 'detail',
+        component: ()=>import('@/views/detail/index'),
+        meta:{
+            title: '文章详情'
+        },
+        // props: true,  // 开启路由参数映射, 将路由参数映射到组件的 props 参数中, 必须接收一下
     }
 
 ]

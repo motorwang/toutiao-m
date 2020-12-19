@@ -16,6 +16,16 @@ import './utils/factory';
 // 一定要放在第三方样式之后
 import './styles/index.less';
 
+
+// 日期格式化
+var moment = require('moment');
+moment.locale('zh-cn');
+
+Vue.filter('dateFilter', (value)=> {
+  // return moment(value).startOf('hour').fromNow(); // 计算相对时间   精确到小时
+  return moment(value).format('YYYY-MM-DD HH:mm:ss'); // 自定义格式化时间
+})
+
 Vue.config.productionTip = false;
 
 new Vue({

@@ -46,3 +46,21 @@ export const getHistories = ()=>{
         url: '/app/v1_0/search/histories'
     })
 }
+
+// 文章详情
+// /app/v1_0/articles/:article_id
+export const getArticlesDetail = (article_id)=>{
+    return request({
+        mmethod: 'GET',
+        url: `/app/v1_0/articles/${article_id}`
+    })
+}
+
+// 文章评论或文章评论回复
+export const getComments = (params)=>{
+    return request({
+        mmethod: 'GET',
+        url: '/app/v1_0/comments',
+        params
+    })
+}

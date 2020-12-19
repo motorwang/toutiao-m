@@ -7,7 +7,7 @@
                 finished-text="没有更多了"
                 @load="onLoad"
             >
-                <van-cell v-for="(article,index) in list" :key="index" :title="article.title" />
+                <van-cell v-for="(article,index) in list" :key="index" :title="article.title" @click="toDetail(article)"/>
             </van-list>
         </van-pull-refresh>
     </div>
@@ -75,6 +75,16 @@ export default {
                 this.finished = true;
             }
         },
+
+
+        toDetail(item){
+            this.$router.push({
+                path: '/detail',
+                query:{
+                    id: item.art_id
+                }
+            })
+        }
     }
 }
 </script>
